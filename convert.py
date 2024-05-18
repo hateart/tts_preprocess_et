@@ -667,7 +667,8 @@ def convert_sentence(sentence):
     sentence = re.sub(r'([0-9]) ([0-9]{3})(?!\d)', r'\g<1>\g<2>', sentence)
 
     # Morphological analysis with estNLTK
-    text = Text(sentence).analyse('morphology')
+    text = Text(sentence).tag_layer('morph_analysis');
+    text.pop_layer('tokens')
 
     # Dict of converable words where keys are:
     # 'N' - cardinal numbers;
@@ -719,7 +720,7 @@ def convert_sentence(sentence):
             # lowercase capitalized first words in sentence/quote, otherwise abbreviation detection may fail
             elif (i == 0 or (i > 0 and text.words[i - 1].text == '"')) and text_lemma.istitle():
                 text_lemma = text.morph_analysis[i].annotations[0].lemma = text_lemma.lower()
-                
+
             if text_lemma in audible_symbols or text_lemma in abbreviations:
                 if text_lemma not in audible_connecting_symbols:
                     tag_indices['M'].append(i)
